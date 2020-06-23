@@ -1,0 +1,413 @@
+#!/usr/bin/env bash
+
+# ==============================================
+# Emoji Settings
+# ==============================================
+USE_EMOJIS=true # Set to false if you don't wish to show Emojis on the commandline
+# Below are the codes for some emojis to use for each purpose. Feel free to customise.
+# Emoji codes to reference: https://apps.timwhitlock.info/emoji/tables/unicode
+# 🚀
+EMOJI_SECTION="\xF0\x9F\x9A\x80"
+# 📡
+EMOJI_STEP="\xF0\x9F\x93\xA1"
+# ✔️
+EMOJI_SUCCESS="\xE2\x9C\x94"
+# ✅
+# EMOJI_SUCCESS="\xE2\x9C\x85"
+# ✔️
+EMOJI_SAFE_SKIP="\xE2\x9C\x94"
+# 🚨
+EMOJI_FAILURE="\xF0\x9F\x9A\xA8"
+# ⚠️
+EMOJI_WARNING="\xE2\x9A\xA0"
+# ℹ
+EMOJI_INFO="\xE2\x84\xB9"
+# ⌛️
+EMOJI_TIME_WARNING="\xE2\x8C\x9B"
+
+# ----------------------------------------------
+# IF statement reference sheet.
+# ----------------------------------------------
+# if [expr]; then same as if test expr; then
+#
+# ! EXPRESSION	The EXPRESSION is false.
+# -n STRING	The length of STRING is greater than zero.
+# -z STRING	The lengh of STRING is zero (ie it is empty).
+# STRING1 = STRING2	STRING1 is equal to STRING2
+# STRING1 != STRING2	STRING1 is not equal to STRING2
+# INTEGER1 -eq INTEGER2	INTEGER1 is numerically equal to INTEGER2
+# INTEGER1 -gt INTEGER2	INTEGER1 is numerically greater than INTEGER2
+# INTEGER1 -lt INTEGER2	INTEGER1 is numerically less than INTEGER2
+# -d FILE	 True if FILE exists and is a directory.
+# -e FILE	 True if FILE exists (might be directory).
+# -f FILE  True if FILE exists and is a regular file.
+# -r FILE	 True if FILE exists and the read permission is granted.
+# -s FILE	 True if FILE exists and it's size is greater than zero (ie. it is not empty).
+# -w FILE	 True if FILE exists and the write permission is granted.
+# -x FILE	 True if FILE exists and the execute permission is granted.
+# -L PATH  True if Symlink exists at provided path.
+# ----------------------------------------------
+
+# We want to check if this script is being called directly or if it is just being sourced.
+# For our use case we do NOT want to run `functions` directly.
+# It is instead sourced into the install.sh script to make these functions available.
+#
+# $0 is the command exactly as it was called from the command line.
+# For example if we ran `functions` from the directory within which it is contained,
+# then $0 would be ./functions (a single dot signifies the current location in the file system).
+# But if we ran `functions` from somewhere else on our system and used a full path
+# to the script, then $0 might be something like /home/rando/.dotfiles/functions
+#
+# Close to the start of the install.sh script we used dirname to extract the directory
+# to store within the DOTFILES_DIR variable. But here we want to know if the script
+# itself is in the command. To extract that we use basename instead of dirname.
+#
+# The logic here is if the script name is contained within $0 then we tried to run it
+# directly. This is safe to assume since if the file is just sourced it won't be in $0.
+if [[ "$(basename -- "$0")" == "functions" ]]; then
+    printf -- "\n\033[31mDon't run $0 directly. It should only be sourced (for example: inside install.sh).\n";
+    exit 1
+fi
+
+# ==============================================
+# Color settings
+# ==============================================
+# We specify escape sequences in Bash using either \e or \033.
+# Note that \e won't work with echo statements in MacOS version of Bash (prior to switching to zsh)
+# and so we'll be using \033 throughout the rest of this file.
+#
+# To use colours in the command line we follow the escape character with a color code.
+# Text colors range from 30 to 37;
+# Background colors range from 40 to 47; (The color + 10)
+# "Bright" versions of colors range from 90 to 97;
+# Its good practise to reset the color to default (code: 0) after using a color.
+#
+# For example, the color code for Green is 32 and to reset to default is 0.
+# So we might want to show a success message using green and resetting to default after.
+# printf "\033[32mIt worked!\033[0m\n"
+#
+# You can use multiple codes at once too by separating them with a semi-colon.
+# Light Gray background is 47; Black text is 30.
+# So to show black text highlighted in a light gray background use the following:
+# printf "\033[47;30mHighlighted text\033[0m\n"
+#
+# Typing those codes and escape sequences will get old pretty quickly and there's
+# no sense trying to remember each code. Instead we'll create a few variables.
+# This will let us chain the codes together and be easier to read.
+# printf "{bold}{red}Something went wrong!{reset}\n"
+#
+# Base Colors
+black="\033[30m"
+red="\033[31m"
+green="\033[32m"
+yellow="\033[33m"
+blue="\033[34m"
+magenta="\033[35m"
+cyan="\033[36m"
+white="\033[37m" # often also referred to as Light Gray
+# Bright Colors
+brightblack="\033[90m" # often also referred to as Dark Gray
+brightred="\033[91m"
+brightgreen="\033[92m"
+brightyellow="\033[93m"
+brightblue="\033[94m"
+brightmagenta="\033[95m"
+brightcyan="\033[96m"
+brightwhite="\033[97m" # often just "white" if also using Light Gray (°ロ°) !
+# "special" codes
+default="\033[39m"
+reset="\033[0m"
+bold="\033[1m"
+dim="\033[2m"
+underline="\033[4m"
+
+###############################################################################
+# Helper Functions
+###############################################################################
+# ==============================================
+# Print functions
+# ==============================================
+# We can create functions to be used in a shell script.
+# This will save us from duplicating the same code all over the place
+# which leads to tougher maintenance and increased chance of bugs.
+#
+# Once you create a function you can call (aka run) it later
+# using just the name of the function.
+#
+# When we call `section` we will also send some text to it.
+# In this example, the text sent will be used as the section header
+# displayed on screen. This string of text is the first parameter
+# sent and is therefore referenced as $1 in our script below.
+# If you wish to print all parameters you can use $@
+#
+# Therefore, we would call the function like:
+#   section "ZSH Setup"
+section() {
+  if [ $USE_EMOJIS = true ]; then
+    printf "\n${EMOJI_SECTION}  ${bold}$1${normal}\n└─────────────────────────────────── ★ ${reset}\n"
+  else
+    printf "\n   ${bold}$1${normal}\n└─────────────────────────────────── ★ ${reset}\n"
+  fi
+}
+step() {
+  if [ $USE_EMOJIS = true ]; then
+    printf "\n${EMOJI_STEP}  ${underline}$1${reset}\n"
+  else
+    printf "\n  ${underline}$1${reset}\n"
+  fi
+}
+launch_banner() {
+printf "
+         /\\
+        |==|
+        |  |
+        |  |
+        |  |
+       /____\\
+       |    |
+       |XXX |
+       |  IX|
+       |    |
+      /| |  |\\
+     / | |  | \\
+    /__|_|__|__\\
+       /_\/_\\
+       ######
+      ########
+       ######
+        ####
+        ####
+         ##
+         ##   GET READY TO LAUNCH
+         ##
+         ##
+"
+}
+
+echo_success() {
+  # We want to check if the USE_EMOJIS variable is set to true or false.
+  # When creating a variable you just use the name (e.g. USE_EMOJIS=true)
+  # But when referencing it in our code and wanting to see the value stored
+  # inside that variable we prefix the name with the $ symbol.
+  # So in the example below we are checking if the value stored inside
+  # the USE_EMOJIS variable is equal to true by using $USE_EMOJIS.
+  #
+  # local is a keyword that means the variable we create is scoped only to this function.
+  # As such it can be safely used without concern of it impacting anything else outside
+  # the function itself.
+  #
+  # The bit to the right of the assignment is basically just us implementing a ternary.
+  # We check if USE_EMOJIS is true and if it is we set ECHO_ICON to that value, otherwise
+  # we assign it to the default text we wish to use on this step.
+  local ECHO_ICON=$([[ "$USE_EMOJIS" == true ]] && echo "$EMOJI_SUCCESS" || echo "[✓]")
+  # Note the use of $1 as well as things like ${green}.
+  #
+  # The $1 variable will be substituted with the text we sent when
+  # calling the function.
+  #
+  # We could also use ${}. That combination lets use specify
+  # the name of a variable (e.g green from our colour codes)
+  # between braces and our script knows to first grab the contents
+  # of that variable and substitute it in place.
+  #
+  # For our simple purpose it is effectively the same thing and a personal preference.
+  #
+  # If you want to read more check out this stackexchange post:
+  # https://unix.stackexchange.com/questions/4899/var-vs-var-and-to-quote-or-not-to-quote
+  printf "${green}  ${ECHO_ICON} $1${reset}\n"
+}
+echo_error() {
+  local ECHO_ICON=$([[ "$USE_EMOJIS" == true ]] && echo "$EMOJI_FAILURE" || echo "[X]")
+  printf "${red}  ${ECHO_ICON} $1${reset}\n"
+}
+echo_warning() {
+  local ECHO_ICON=$([[ "$USE_EMOJIS" == true ]] && echo "$EMOJI_WARNING" || echo "[!]")
+  printf "${yellow}  ${ECHO_ICON} $1${reset}\n"
+}
+echo_info() {
+  local ECHO_ICON=$([[ "$USE_EMOJIS" == true ]] && echo "$EMOJI_INFO" || echo "[i]")
+  printf "${default}  ${ECHO_ICON} $1${reset}\n"
+}
+echo_time_warning() {
+  local ECHO_ICON=$([[ "$USE_EMOJIS" == true ]] && echo "$EMOJI_TIME_WARNING" || echo "[!]")
+  printf "${yellow}  ${ECHO_ICON} This step may take a while to complete...${reset}\n"
+}
+# Used to show a step can be safely skipped (usually because it is already installed)
+echo_safe_skip() {
+  local ECHO_ICON=$([[ "$USE_EMOJIS" == true ]] && echo "$EMOJI_SAFE_SKIP" || echo "[✓]")
+  printf "${dim}  ${ECHO_ICON} $1${reset}\n"
+}
+echo_install() {
+  printf "${default}  [↓] $1${reset}\n"
+}
+# ==============================================
+# OS Checks
+# ==============================================
+# Is the Operating System the same as the parameter sent to the function?
+# E.g:  if_os "darwin"
+if_os () { [[ $OSTYPE == *$1* ]]; }
+# A convenience function to just as "are we on MacOS?" instead of using
+# if_os "darwin" each time to check if it is MacOS.
+#
+# It might be worth talking about the double brackets versus no brackets
+# in an IF statement. Note that we used double square brackets to perform a
+# comparison between the value of the environment varialble $OSTYPE and the
+# text sent as the parameter when calling if_os.
+#    [[ $OSTYPE == *$1* ]];
+# But here we just need the result of the if_os function call. We aren't
+# doing any kind of comparison between values.
+# The same is true when we use is_macos in our code. The if statement would
+# look like:
+#    if is_macos; then
+# We don't wrap it in brackets since we aren't doing a comparison. Our if
+# statement purely checks whether the function called returns a success.
+is_macos () { if_os darwin; }
+# Get some more detailed information on the Linux distro if desired.
+is_nix () {
+    case "$OSTYPE" in
+        *linux*|*hurd*|*msys*|*cygwin*|*sua*|*interix*) sys="gnu";;
+        *bsd*|*darwin*) sys="bsd";;
+        *sunos*|*solaris*|*indiana*|*illumos*|*smartos*) sys="sun";;
+    esac
+    [[ "${sys}" == "$1" ]];
+}
+
+# ==============================================
+# Install functions
+# ==============================================
+# $1:  Git repo address
+# $2:  Local destination
+# $3:  Any options/parameters
+# example:  clone_git_repo "https://github.com/nvm-sh/nvm.git" "~/.nvm" "--branch v0.35.3"
+clone_git_repo() {
+  if [ ! -d $2 ]; then
+    echo_install "Cloning $1 into $2"
+    git clone --quiet $1 $2 $3 > /dev/null
+    # Check it all went well
+    if [ -d $2 ]; then
+      echo_success "cloned!"
+    else
+      echo_error "not cloned!"
+    fi
+  else
+    echo_safe_skip "$2 already exists. Skipping git clone."
+  fi
+}
+# TODO: Implement install options! (e.g. --with-iri); Maybe use $@ instead
+install_brew_package() {
+# $1:  Package name (e.g. zsh)
+# $2:  Package install options (if any)
+  if [ if_macos ]; then
+    # Check if brew package already installed using an exact grep match. E.g. "z" would return "z" and "zsh"
+    if ! [ $(brew list | grep -E "(^|[[:space:]])$1([[:space:]]|$)") ]; then
+      # Check for options during install
+      echo_install "Installing $1"
+      brew install $1 > /dev/null
+      # Check it all went well
+      if [ $(brew list | grep -E "(^|[[:space:]])$1([[:space:]]|$)") ]; then
+        echo_success "installed!"
+      else
+        echo_error "not installed!"
+      fi
+    else
+      echo_safe_skip "$1 already installed. Skipping installation."
+    fi
+  fi
+}
+# $1:  Package name (e.g. dolphin)
+install_cask_package() {
+  if [ if_macos ]; then
+    # Do an exact grep match as "z" would return "z" and "zsh"
+    if ! [ $(brew cask list | grep -E "(^|[[:space:]])$1([[:space:]]|$)") ]; then
+      echo_install "Installing $1"
+      brew cask install $1 > /dev/null
+      # Check it all went well
+      if [ $(brew cask list | grep -E "(^|[[:space:]])$1([[:space:]]|$)") ]; then
+        echo_success "installed!"
+      else
+        echo_error "not installed!"
+      fi
+    else
+      echo_safe_skip "$1 already installed. Skipping installation."
+    fi
+  fi
+}
+
+# ==============================================
+# Filesystem helpers
+# ==============================================
+dir_does_not_exist() {
+  # There is an arg1 and the directory does not exist
+  if [ $# -eq 1 ] && [ ! -d $1 ]; then
+    echo 1
+  else
+    echo 0
+  fi
+}
+create_dir() {
+  if [[ $(dir_does_not_exist $1) -eq 1 ]]; then
+    echo_install "Creating directory at $1"
+    mkdir -p $1
+    if [[ $(dir_does_not_exist $1) -eq 0 ]]; then
+      echo_success "created!"
+    else
+      echo_error "not created!"
+    fi
+  else
+    echo_safe_skip "Directory $1 already exists"
+  fi
+}
+
+create_symlink() {
+  # $# holds the count of parameters sent to the function when called.
+  # For example "create_symlink file1.sh file2.sh" would have a $# value of 2.
+  if [ $# -eq 2 ]; then
+    if [ ! -f $1 ]; then
+      echo_error "Source $1 does not exist"
+    elif [ -e $2 ] && [ ! -L $2 ]; then
+      echo_error "Target $2 already exists as file"
+    elif [ ! -L $2 ]; then
+      echo_install "Creating symlink from $1 to $2"
+
+      # Create the symlink
+      ln -s $1 $2
+
+      if [ -L $2 ]; then
+        echo_success "linked!"
+      else
+        echo_error "not linked!"
+      fi
+    else
+      echo_safe_skip "Symlink to $2 already exists"
+    fi
+  else
+    echo_error "Insufficient parameters provided"
+  fi
+}
+
+copy_file() {
+  if [ $# -eq 2 ]; then
+    if [ ! -f "$1" ]; then
+      echo_error "Source $1 does not exist"
+    elif [ -e "$2" ] && [ ! -L "$2" ]; then
+      echo_error "Target $2 already exists as file"
+    elif [ -L "$2" ]; then
+      echo_error "Target $2 already exists as symlink"
+    else
+      echo_install "Copying $1 to $2"
+      cp "$1" "$2"
+      if [ -e "$2" ] && [ ! -L "$2" ]; then
+        echo_success "copied!"
+      else
+        echo_error "not copied!"
+      fi
+    fi
+  else
+    echo_error "Insufficient parameters provided"
+  fi
+}
+
+command_exists()
+{
+  command -v "$1" >/dev/null 2>&1
+}

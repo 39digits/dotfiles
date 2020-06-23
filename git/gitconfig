@@ -1,0 +1,5 @@
+[user]
+	#name = Change Me
+	#email = user@example.com
+[core]
+	excludesfile = ~/.gitignore_global

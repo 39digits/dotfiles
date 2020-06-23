@@ -1,0 +1,35 @@
+#
+# Used for executing user's commands at start, will be sourced when starting as a login shell (pre-zshrc).
+#
+
+###########################
+## Paths
+##
+
+### Ensure path arrays do not contain duplicates.
+# typeset -gU cdpath fpath mailpath path
+
+### Set the the list of directories that cd searches.
+# cdpath=(
+#   $cdpath
+# )
+
+### Set the list of directories that Zsh searches for programs.
+# path=(
+#   /usr/local/{bin,sbin}
+#   ~/.composer/vendor/bin
+#   $path
+# )
+
+# Enable the postgres CLI commands
+# path+=(/Applications/Postgres.app/Contents/Versions/latest/bin)
+
+###########################
+## User Commands
+##
+
+# 1. Sets up your shims path. Only requirement for rbenv to function properly. Can manually add ~/.rbenv/shims to your $PATH too.
+# 2. Installs autocompletion. This is entirely optional but pretty useful. Sourcing ~/.rbenv/completions/rbenv.zsh.
+# 3. Rehashes shims. Doing this automatically makes sure everything is up to date. You can always run rbenv rehash manually.
+# 4. Installs the sh dispatcher. Optional, but allows rbenv and plugins to change variables in your current shell.
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi

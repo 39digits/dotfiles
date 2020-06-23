@@ -1,0 +1,40 @@
+// Place your settings in this file to overwrite the default settings
+{
+  "editor.fontFamily": "\"Source Code Pro for Powerline\", 'Cascadia Code', monospace",
+  "terminal.integrated.fontFamily": "MesloLGS NF",
+  "editor.fontSize": 14,
+  "editor.lineHeight": 24,
+  "editor.tabSize": 2,
+  "editor.minimap.enabled": false,
+  "explorer.openEditors.visible": 0,
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "files.trimTrailingWhitespace": true,
+  "[markdown]": {
+    // double spaces at the end of a line = new line
+    "files.trimTrailingWhitespace": false
+  },
+  "telemetry.enableTelemetry": false,
+  // ########### JavaScript / Node
+  "typescript.validate.enable": false,
+  "javascript.validate.enable": false,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnSave": true,
+  // "prettier.eslintIntegration": false,
+  "prettier.singleQuote": true,
+  "editor.multiCursorModifier": "alt",
+  "workbench.colorTheme": "Anchorage",
+  "remote.extensionKind": {
+    "ms-azuretools.vscode-docker": "workspace"
+  },
+  "debug.toolBarLocation": "docked",
+  "git.suggestSmartCommit": false
+  // ########### PHP - Not currently in use
+  // "php.suggest.basic": false,
+  // "php-cs-fixer.onsave": true,
+  // "[php]": {
+  //   "editor.defaultFormatter": "junstyle.php-cs-fixer"
+  // },
+}
