@@ -57,10 +57,11 @@ DOTFILES_MACOS_NETBIOSNAME="thegrid"
 DOTFILES_MACOS_DOCK_ICON_SIZE="29"
 DOTFILES_MACOS_DOCK_SIZE="47.91204"
 
-# -----------------------------------------------------------------------------
-# ----- Some general development settings
-section "Development settings"
 
+
+# -----------------------------------------------------------------------------
+# ----- Git settings
+section "Git settings"
 # Apply the Git user settings to our global config
 if [[ $DOTFILES_GIT_EMAIL != "" ]] || [[ $DOTFILES_GIT_USERNAME != "" ]]; then
   step "Applying Git global config"
@@ -73,8 +74,30 @@ if [[ $DOTFILES_GIT_EMAIL != "" ]] || [[ $DOTFILES_GIT_USERNAME != "" ]]; then
     echo_success "Email set to ${DOTFILES_GIT_EMAIL}"
   fi
 fi
+# Add an alias to set default branch to "main" on git creation.
+#
+# This will automatically set the default branch to be "main" instead
+# of "master" without needing to do any awkward commits and branch changes.
+# It works on initial creation since that isn't set in stone until the first
+# commit to the repository.
+#
+# This was originally inspired by Scott Hanselman's blog post. Prior to
+# that blog post I didn't give much thought to changing the default branch.
+#
+# I spent many hours in University writing C and C++ and the word "main"
+# personally brings back some fuzzy, happy, nostalgic memories. Every
+# "int main()" at the start of a new C program had the potential to become
+# anything my programmer's heart desired. That alone makes the use of "main"
+# as default branch on my personal projects extra nostalgic :)
+#
+# References:
+# https://www.hanselman.com/blog/EasilyRenameYourGitDefaultBranchFromMasterToMain.aspx
+git config --global alias.main '!git init && git symbolic-ref HEAD refs/heads/main'
 
+# -----------------------------------------------------------------------------
+# ----- Node / NPM settings
 # ----- NPM INIT SETTINGS
+# section "Node settings"
 # You can automatically populate some of the fields when running `npm init`
 # by setting those in your global ~/.npmrc file instead.
 # step "Applying npm global config"
@@ -83,6 +106,10 @@ fi
 # npm config set init.author.url "${DOTFILES_NPM_URL}"
 # npm config set init.license "${DOTFILES_NPM_LICENSE}"
 # npm config set init.version "${DOTFILES_NPM_DEFAULT_VERSION}"
+
+# -----------------------------------------------------------------------------
+# ----- Some general development settings
+section "Development settings"
 
 step "Create development directories"
 create_dir "$HOME/Development"
