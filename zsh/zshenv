@@ -24,7 +24,6 @@ if [[ -n $SSH_CONNECTION ]]; then
 else
   export EDITOR='vi'
 fi
-export VISUAL='mvim'
 
 # Pager settings
 export PAGER='less'
