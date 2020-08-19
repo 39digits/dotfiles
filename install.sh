@@ -127,6 +127,15 @@ section "Git"
 if is_macos; then
   step "Installing git"
   install_brew_package git
+else
+  sudo add-apt-repository ppa:git-core/ppa
+  sudo apt-get update
+  sudo apt install git
+  if [ $? -eq 0 ]; then
+    echo_success "Latest version of git successfully installed."
+	else
+		echo_error "The latest version of git could not be installed."
+	fi
 fi
 
 # Symlink git global_ignore to home directory
