@@ -505,6 +505,7 @@ if is_macos; then
   install_brew_package openssl
   install_brew_package httpie
 else
+  sudo apt-get install build-essential
   sudo apt-get install httpie
   sudo apt-get install tree
 fi
