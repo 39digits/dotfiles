@@ -44,4 +44,5 @@ fi
 
 # Stop homebrew from collecting usage analytics
 export HOMEBREW_NO_ANALYTICS=1
-
+# Disable Next.js from collecting usage analytics
+export NEXT_TELEMETRY_DISABLED=1
