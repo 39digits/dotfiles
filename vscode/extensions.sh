@@ -9,9 +9,9 @@ if [ if_macos ]; then
   section "Visual Studio Code"
 
   step "Installing Visual Studio Code"
-  if ! [ $(brew cask list | grep -w visual-studio-code) ]; then
+  if ! [ $(brew list --cask | grep -w visual-studio-code) ]; then
     # Brew cask install Visual Studio Code editor
-    brew cask install visual-studio-code
+    brew install visual-studio-code
   fi
     # For reference:
     # To install VSCode packages using CLI

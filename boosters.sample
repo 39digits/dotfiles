@@ -259,7 +259,7 @@ if is_macos; then
 
   # step "Installing Source Code Pro for Powerline"
   # echo_time_warning
-  # brew cask install font-source-code-pro-for-powerline
+  # brew install font-source-code-pro-for-powerline
 
   step "Installing MesloLGS NF fonts (terminal font)"
   copy_file "$DOTFILES_DIR/fonts/MesloLGS NF Bold.ttf" "${HOME}/Library/Fonts/MesloLGS NF Bold.ttf"
