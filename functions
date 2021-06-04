@@ -299,12 +299,12 @@ install_brew_package() {
 # $2:  Package install options (if any)
   if [ if_macos ]; then
     # Check if brew package already installed using an exact grep match. E.g. "z" would return "z" and "zsh"
-    if ! [ $(brew list | grep -E "(^|[[:space:]])$1([[:space:]]|$)") ]; then
+    if ! [ $(brew list --formulae | grep -E "(^|[[:space:]])$1([[:space:]]|$)") ]; then
       # Check for options during install
       echo_install "Installing $1"
       brew install $1 > /dev/null
       # Check it all went well
-      if [ $(brew list | grep -E "(^|[[:space:]])$1([[:space:]]|$)") ]; then
+      if [ $(brew list --formulae | grep -E "(^|[[:space:]])$1([[:space:]]|$)") ]; then
         echo_success "installed!"
       else
         echo_error "not installed!"
@@ -318,11 +318,11 @@ install_brew_package() {
 install_cask_package() {
   if [ if_macos ]; then
     # Do an exact grep match as "z" would return "z" and "zsh"
-    if ! [ $(brew cask list | grep -E "(^|[[:space:]])$1([[:space:]]|$)") ]; then
+    if ! [ $(brew list --cask | grep -E "(^|[[:space:]])$1([[:space:]]|$)") ]; then
       echo_install "Installing $1"
-      brew cask install $1 > /dev/null
+      brew install $1 > /dev/null
       # Check it all went well
-      if [ $(brew cask list | grep -E "(^|[[:space:]])$1([[:space:]]|$)") ]; then
+      if [ $(brew list --cask | grep -E "(^|[[:space:]])$1([[:space:]]|$)") ]; then
         echo_success "installed!"
       else
         echo_error "not installed!"
