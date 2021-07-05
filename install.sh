@@ -109,7 +109,12 @@ if is_macos; then
     # Make the brew path available immediately for the rest of this script.
     # Otherwise we would need to explicitly call via the full path or start a fresh
     # shell session which would kill the rest of our script from runnning.
-    export PATH="/usr/local/bin:$PATH"
+    # Differentiating between M1 and x86 macOS
+    if [[ "$(uname -m)" == "arm64" ]]; then
+      export PATH="/opt/homebrew/bin:${PATH}"
+    else
+      export PATH="/usr/local/bin:$PATH"
+    fi
     echo_success "Homebrew installed!"
   else
     echo_safe_skip "Homebrew already installed. Skipping."
