@@ -297,7 +297,7 @@ step "Installing oh-my-zsh"
 # But that just seems a bit pointless when we can just do a manual install using git clone.
 #
 # KEEP_ZSHRC=yes RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-clone_git_repo git://github.com/ohmyzsh/oh-my-zsh.git ~/.oh-my-zsh
+clone_git_repo https://github.com/ohmyzsh/oh-my-zsh.git ~/.oh-my-zsh
 
 # Clone oh-my-zsh plugins
 # The plugins below are a good mix but feel free to add any of your own preferences.
