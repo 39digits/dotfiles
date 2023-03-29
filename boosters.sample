@@ -30,7 +30,6 @@ fi
 #
 # Some examples of things you can include:
 #  - SSH config
-#  - MacOS default settings
 #  - Install other languages (e.g. perl, python, etc)
 #  - Add any Linux package repositories
 #
@@ -49,14 +48,6 @@ DOTFILES_NPM_EMAIL=""
 DOTFILES_NPM_URL=""
 DOTFILES_NPM_LICENSE="MIT"
 DOTFILES_NPM_DEFAULT_VERSION="0.1.0"
-DOTFILES_MACOS_COMPUTERNAME="thegrid"
-DOTFILES_MACOS_HOSTNAME="thegrid.local"
-DOTFILES_MACOS_LOCALHOSTNAME="thegrid"
-DOTFILES_MACOS_NETBIOSNAME="thegrid"
-# highlight_color: "0.780400 0.815700 0.858800"  # Graphite
-DOTFILES_MACOS_DOCK_ICON_SIZE="29"
-DOTFILES_MACOS_DOCK_SIZE="47.91204"
-
 
 
 # -----------------------------------------------------------------------------
@@ -74,27 +65,6 @@ if [[ $DOTFILES_GIT_EMAIL != "" ]] || [[ $DOTFILES_GIT_USERNAME != "" ]]; then
     echo_success "Email set to ${DOTFILES_GIT_EMAIL}"
   fi
 fi
-# Since git 2.28.0 you can set the preferred default branch name
-# when you run git init :D
-#
-# This configuration variable only affects new repositories, and does not
-# cause branches in existing projects to be renamed. git clone will also
-# continue to respect the HEAD of the repository you’re cloning from,
-# so you won’t see a change in branch names until a maintainer initiates one.
-#
-# This was originally inspired by Scott Hanselman's blog post. Prior to
-# that blog post I didn't give much thought to changing the default branch.
-#
-# I spent many hours in University writing C and C++ and the word "main"
-# personally brings back some fuzzy, happy, nostalgic memories. Every
-# "int main()" at the start of a new C program had the potential to become
-# anything my programmer's heart desired. That alone makes the use of "main"
-# as default branch on my personal projects extra nostalgic :)
-#
-# References:
-# https://www.hanselman.com/blog/EasilyRenameYourGitDefaultBranchFromMasterToMain.aspx
-# https://github.blog/2020-07-27-highlights-from-git-2-28/
-git config --global init.defaultBranch main
 
 # -----------------------------------------------------------------------------
 # ----- Node / NPM settings
@@ -127,192 +97,8 @@ if command_exists gatsby; then
 fi
 
 # -----------------------------------------------------------------------------
-# ----- MACOS SETTINGS AND DEFAULTS
-if is_macos; then
-  section "MacOS Settings and Configuration"
-
-  step "Setting MacOS configuration options"
-  # Set computer name (as done via System Preferences → Sharing)
-  sudo scutil --set ComputerName "${DOTFILES_MACOS_COMPUTERNAME}"
-  sudo scutil --set HostName "${DOTFILES_MACOS_HOSTNAME}"
-  sudo scutil --set LocalHostName "${DOTFILES_MACOS_LOCALHOSTNAME}"
-  sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "${DOTFILES_MACOS_NETBIOSNAME}"
-
-  # Set highlight color
-  # Set OS X highlight color
-  # TODO:  This isn't working properly in Mojave for some reason
-  # AppleHighlightColor = "0.847059 0.847059 0.862745 Graphite";
-  # defaults write NSGlobalDomain AppleHighlightColor -string "0.780400 0.815700 0.858800"
-  # defaults write NSGlobalDomain AppleHighlightColor -string "0.326701 0.417412 0.449955 Other"
-
-  ### TODO: Why are these not taking in a fresh setup on MacOS Mojave?
-  # Expand save panel by default
-  defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
-  # Disable smart quotes
-  defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
-  # Disable smart dashes
-  defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
-  # Disable auto-correct
-  defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
-  # Disable adding a period on a double space
-  defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
-  # Require password immediately after sleep or screen saver begins
-  #defaults write com.apple.screensaver askForPassword -int 1
-  #defaults write com.apple.screensaver askForPasswordDelay -int 0
-
-  # Save screenshots to the desktop
-  create_dir "$HOME/Desktop/Screenshots"
-  defaults write com.apple.screencapture location -string "~/Desktop/Screenshots"
-  # Save screenshots in PNG format (other options: BMP, GIF, JPG, PDF, TIFF)
-  defaults write com.apple.screencapture type -string "png"
-
-  # Finder: show hidden files by default
-  #defaults write com.apple.finder AppleShowAllFiles -bool true
-  # Finder: show all filename extensions
-  #defaults write NSGlobalDomain AppleShowAllExtensions -bool true
-  # Finder: show status bar
-  #defaults write com.apple.finder ShowStatusBar -bool true
-  # Finder: show path bar
-  #defaults write com.apple.finder ShowPathbar -bool true
-  # Avoid creating .DS_Store files on network volumes
-  #defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
-  # Use list view in all Finder windows by default
-  # Four-letter codes for the other view modes: `icnv`, `clmv`, `Flwv`
-  #defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
-  # Show the ~/Library folder
-  #chflags nohidden ~/Library
-
-  # Set OS X dock icon size
-  defaults write com.apple.dock tilesize -integer "${DOTFILES_MACOS_DOCK_ICON_SIZE}"
-  # Disable displaying recently used apps in the Dock
-  defaults write com.apple.dock show-recents -integer 0
-  # Disable the terrible default to "Automatically rearrange Spaces based on most recent use."
-  defaults write com.apple.dock mru-spaces -integer 0
-
-  # Disable Dashboard
-  # defaults write com.apple.dashboard mcx-disabled -bool true
-  # Don’t show Dashboard as a Space
-  #defaults write com.apple.dock dashboard-in-overlay -bool true
-  # Don’t automatically rearrange Spaces based on most recent use
-  #defaults write com.apple.dock mru-spaces -bool false
-
-  #Restart OS X dock to apply changes.
-  sudo killall Dock
-fi
-
-
-# -----------------------------------------------------------------------------
-# ----- Ruby
-if is_macos; then
-  section "Ruby"
-  step "Installing rbenv"
-  if is_macos; then
-    # Despite the promise made by rbenv-installer of installing ruby-build,
-    # it seems to throw a --without-ruby-build error at the moment of writing
-    install_brew_package rbenv
-    install_brew_package ruby-build
-  else
-    # The rbenv-installer script idempotently installs or updates rbenv on your system.
-    # If Homebrew is detected, installation will proceed using brew install/upgrade.
-    # Otherwise, rbenv is installed under ~/.rbenv.
-    # Additionally, ruby-build is also installed if rbenv install is not already available.
-    curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-installer | bash
-  fi
-
-  #  For reference, list the available versions of Ruby to find the latest one.
-  #  rbenv install --list
-
-  # MacOS returns "system" if no extra versions installed.
-  # TODO: Check that Ubuntu on WSL2 does the same.
-  if [ $(rbenv global) == "system" ]; then
-    step "Install latest version of Ruby using rbenv"
-    echo_time_warning
-    # The below will install the "latest" version of Ruby
-    rbenv install $(rbenv install -l | grep -v - | tail -1) &>/dev/null
-    # TODO: Check for actual success?
-    echo_success "Ruby installed"
-
-    step "Set latest stable version of Ruby as global"
-    rbenv global $(rbenv install -l | grep -v - | tail -1) &>/dev/null
-    # TODO: Check for actual success?
-    echo_success "Ruby $(rbenv global) set as global version"
-  else
-    echo_safe_skip "rbenv version of Ruby $(rbenv global) already installed."
-  fi
-fi
-
-
-# -----------------------------------------------------------------------------
-# ----- FONTS
-if is_macos; then
-  section "System Fonts"
-  # Source: https://github.com/ryanoasis/nerd-fonts/releases/latest
-  # NERDFONTS=(
-  #     SourceCodePro
-  #     SpaceMono
-  #     Hack
-  #     AnonymousPro
-  #     Inconsolata
-  # )
-  step "Tapping brew cask fonts"
-  brew tap homebrew/cask-fonts
-
-  # step "Installing Source Code Pro for Powerline"
-  # echo_time_warning
-  # brew install font-source-code-pro-for-powerline
-
-  step "Installing MesloLGS NF fonts (terminal font)"
-  copy_file "$DOTFILES_DIR/fonts/MesloLGS NF Bold.ttf" "${HOME}/Library/Fonts/MesloLGS NF Bold.ttf"
-  copy_file "$DOTFILES_DIR/fonts/MesloLGS NF Bold Italic.ttf" "${HOME}/Library/Fonts/MesloLGS NF Bold Italic.ttf"
-  copy_file "$DOTFILES_DIR/fonts/MesloLGS NF Italic.ttf" "${HOME}/Library/Fonts/MesloLGS NF Italic.ttf"
-  copy_file "$DOTFILES_DIR/fonts/MesloLGS NF Regular.ttf" "${HOME}/Library/Fonts/MesloLGS NF Regular.ttf"
-
-  step "Installing Source Code Pro for Powerline fonts (Visual Studio Code font"
-  copy_file "$DOTFILES_DIR/fonts/Sauce Code Powerline Black.otf" "${HOME}/Library/Fonts/Sauce Code Powerline Black.otf"
-  copy_file "$DOTFILES_DIR/fonts/Sauce Code Powerline Bold.otf" "${HOME}/Library/Fonts/Sauce Code Powerline Bold.otf"
-  copy_file "$DOTFILES_DIR/fonts/Sauce Code Powerline ExtraLight.otf" "${HOME}/Library/Fonts/Sauce Code Powerline ExtraLight.otf"
-  copy_file "$DOTFILES_DIR/fonts/Sauce Code Powerline Light.otf" "${HOME}/Library/Fonts/Sauce Code Powerline Light.otf"
-  copy_file "$DOTFILES_DIR/fonts/Sauce Code Powerline Medium.otf" "${HOME}/Library/Fonts/Sauce Code Powerline Medium.otf"
-  copy_file "$DOTFILES_DIR/fonts/Sauce Code Powerline Regular.otf" "${HOME}/Library/Fonts/Sauce Code Powerline Regular.otf"
-  copy_file "$DOTFILES_DIR/fonts/Sauce Code Powerline Semibold.otf" "${HOME}/Library/Fonts/Sauce Code Powerline Semibold.otf"
-
-  # step "Installing google-font-installer via npm"
-  # Should have been installed as part of nvm default-packages
-  # npm install -g google-font-installer
-  # if command_exists gfi; then
-  #   step "Installing Inconsolata (Google Font)"
-  #   gfi install inconsolata
-  #   step "Installing Source Code Pro (Google Font)"
-  #   gfi install Source Code Pro
-  # else
-  #   step "Google Fonts"
-  #   echo_error "gfi command line tool not installed"
-  # fi
-fi
-
-
-# -----------------------------------------------------------------------------
 # ----- SQLite
 section "SQLite"
 step "Installing SQLite"
-if is_macos; then
-  install_brew_package sqlite
-else
-  sudo apt-get install sqlite3
-fi
+sudo apt-get install -qq -y sqlite3 > /dev/null
 
-
-# -----------------------------------------------------------------------------
-# ----- Mongo
-# I prefer Docker, but here's a MongoDB example
-# section "MongoDB"
-# if is_macos; then
-#   step "Tapping mongodb/brew"
-#   brew tap mongodb/brew
-# fi
-# step "Installing MongoDB"
-# if is_macos; then
-#   install_brew_package mongodb/brew/mongodb-community
-# else
-#   sudo apt-get install mongodb
-# fi

@@ -59,7 +59,9 @@ set -e
 # Lets break this command down into its numerous parts.
 # Assume that we have installed the dotfiles to /home/rando/.dotfiles.
 # We cannot rely only on pwd as we could invoke our script using an absolute
-# path from anywhere on our system. We want the full path to the script's location.
+# path from anywhere on our system (meaning pwd would return the directory from
+# which we ran the command instead of the location of install.sh).
+# We definitely want the full path to the script's location.
 #
 # $0 is the command exactly as it was called from the command line.
 # For example if we ran install.sh from the directory within which it is contained,
@@ -78,7 +80,9 @@ DOTFILES_DIR=$(cd $(dirname $0) && pwd)
 # Source any required files
 ###############################################################################
 # We first check that the required functions file exists.
-# If not exit with an error.
+# This function file contains some handy tasks we might run frequently
+# For example, a function to create a symlink that checks that the source exists.
+# If the function file itself does not exist then we exit with an error.
 if [ -f "functions" ]; then
   source functions
 else
@@ -86,7 +90,17 @@ else
   exit 1
 fi
 ###############################################################################
-# Launch sequence initiated.
+# Check whether we are on macOS or not
+###############################################################################
+# These dotfiles used to support both macOS and Linux installs but I now
+# only develop on Windows, Linux, Linux via WSL2, or Docker :)
+if is_macos; then
+  printf -- "\n\033[31mThese dotfiles are for use on Linux or WSL2.\033[0m\n";
+  printf -- "\n\033[31mTo setup macOS either use v1.0 or try the untested macos.sh installer.\033[0m\n";
+  exit 1
+fi
+###############################################################################
+# Launch sequence initiated - prints a fancy banner
 ###############################################################################
 launch_banner
 
@@ -95,52 +109,41 @@ launch_banner
 ###############################################################################
 section "Launch Readiness"
 
+echo_info "Updating package lists"
 # Here we handle any OS-specific prerequisites for our install script.
-# If it is MacOS we will want to install homebrew (https://brew.sh/)
-# or if it is Ubuntu we might want to run an apt update
-if is_macos; then
-  # ----- First check if homebrew is installed
-  # We used to first check that XCode CLI tools were installed, but the latest
-  # brew install scripts looks for any dependencies and kicks off the installation
-  # thus saving us an extra step :)
-  if ! command_exists brew; then
-    step "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-    # Make the brew path available immediately for the rest of this script.
-    # Otherwise we would need to explicitly call via the full path or start a fresh
-    # shell session which would kill the rest of our script from runnning.
-    # Differentiating between M1 and x86 macOS
-    if [[ "$(uname -m)" == "arm64" ]]; then
-      export PATH="/opt/homebrew/bin:${PATH}"
-    else
-      export PATH="/usr/local/bin:$PATH"
-    fi
-    echo_success "Homebrew installed!"
-  else
-    echo_safe_skip "Homebrew already installed. Skipping."
-  fi
-else
-  # ----- Update Ubuntu package lists
-  sudo apt-get update
-fi
+# For Ubuntu we want to run an apt-get update
+# ----- Update Ubuntu package lists
+# -qq = Really quiet mode to keep output to a minimum
+# -y  = Assume Yes so no input is required unless apt-get finds an issue
+sudo apt-get update -qq -y
 
 ###############################################################################
 # GIT
 ###############################################################################
 section "Git"
 
-if is_macos; then
-  step "Installing git"
-  install_brew_package git
+# What are we doing below with /dev/null? And what is /dev/null?
+# /dev/null is the Linux null device file and anything written to it will be discarded.
+# Note - we are piping stdout to this null device file but not stderr.
+# stdout = uses file descriptor 1 and is the default in an output redirect using >
+# stderr = uses file descriptor 2
+# This means that any general output from running the command is not displayed
+# to the user in the display and keeps the script run clean.
+# If we wanted to only ignore errors (NOT RECOMMENDED!) then be explicit and
+# redirect the output to 2> /dev/null.
+# To redirect both stdout and stderr (also not recommended) you can do that
+# using &> /dev/null instead.
+# Note - you usually do not want to redirect commands to /dev/null but it's
+# safe for our script and keeps the output cleaner
+sudo add-apt-repository -y ppa:git-core/ppa > /dev/null
+sudo apt-get update -qq -y
+# In theory we don't need the -qq here anymore but I've left it in place in case
+# you wish to remove the stdout redirect to /dev/null
+sudo apt-get install -qq -y git > /dev/null
+if [ $? -eq 0 ]; then
+  echo_success "Latest version of git successfully installed."
 else
-  sudo add-apt-repository ppa:git-core/ppa
-  sudo apt-get update
-  sudo apt install git
-  if [ $? -eq 0 ]; then
-    echo_success "Latest version of git successfully installed."
-	else
-		echo_error "The latest version of git could not be installed."
-	fi
+  echo_error "The latest version of git could not be installed."
 fi
 
 # Symlink git global_ignore to home directory
@@ -162,9 +165,36 @@ create_symlink $DOTFILES_DIR/git/gitignore_global ~/.gitignore_global
 # should we make any changes we would want to keep available by default.
 # But at the same time we don't want to commit our username and email
 # address to the public repository.
-# Don't worry - we'll set the name and email in the post-install.
+# Don't worry - we'll set the name and email in the post-install booster.
 step "Copy gitconfig into home directory"
 copy_file $DOTFILES_DIR/git/gitconfig ~/.gitconfig
+
+# Since git 2.28.0 you can set the preferred default branch name
+# when you run git init :D
+#
+# I have a git config set to use "main" as the default branch name.
+#
+# This configuration variable only affects new repositories, and does not
+# cause branches in existing projects to be renamed. git clone will also
+# continue to respect the HEAD of the repository you’re cloning from,
+# so you won’t see a change in branch names until a maintainer initiates one.
+#
+# This was originally inspired by Scott Hanselman's blog post. Prior to
+# that blog post I didn't give much thought to changing the default branch.
+#
+# I spent many hours in University writing C and C++ and the word "main"
+# personally brings back some fuzzy, happy, nostalgic memories. Every
+# "int main()" at the start of a new C program had the potential to become
+# anything my programmer's heart desired. That alone makes the use of "main"
+# as default branch on my personal projects extra nostalgic :)
+#
+# References:
+# https://www.hanselman.com/blog/EasilyRenameYourGitDefaultBranchFromMasterToMain.aspx
+# https://github.blog/2020-07-27-highlights-from-git-2-28/
+#
+# If you wish to change this default branch name, you can use the command below
+# but be sure to change "main" to your preferred default
+# git config --global init.defaultBranch main
 
 ###############################################################################
 # ZSH
@@ -251,17 +281,7 @@ section "ZSH"
 
 # Start by installing the latest version of ZSH on our system
 step "Installing ZSH"
-if is_macos; then
-# It seems that using brew install of zsh on MacOS Catalina throws an error
-# about insecure directories and files when running compinit required by the
-# zsh-completions plugin for oh-my-zsh.
-# It won't show an error until you open a fresh instance of zsh but there
-# is an easy solution to fix things.
-# Simply run:  compaudit | xargs chmod g-w
-  install_brew_package zsh
-else
-  sudo apt-get install zsh
-fi
+sudo apt-get install -qq -y zsh > /dev/null
 
 # Install oh-my-zsh which is a handy framework for enhancing zsh
 step "Installing oh-my-zsh"
@@ -411,12 +431,12 @@ section "Web Development - Node"
 step "Installing Node via nvm"
 if [ $(dir_does_not_exist "${HOME}/.nvm") ]; then
   # There is an automatic install script available
-  # curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+  # curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
   # However it tries to add some lines to your .zshrc file which aren't required
   # given we are using the zsh-nvm plugin instead. To avoid these extra lines
   # being added we can simply clone the repo at the latest tag
-  # git clone https://github.com/nvm-sh/nvm.git ~/.nvm --branch v0.35.3
-  clone_git_repo "https://github.com/nvm-sh/nvm.git" "${HOME}/.nvm" "--branch v0.35.3"
+  # git clone https://github.com/nvm-sh/nvm.git ~/.nvm --branch v0.39.3
+  clone_git_repo "https://github.com/nvm-sh/nvm.git" "${HOME}/.nvm" "--branch v0.39.3"
   echo_success "nvm installed"
 else
   echo_safe_skip "nvm already installed"
@@ -473,13 +493,13 @@ if [[ $DOTFILES_NVM_NODE_CURRENT == "none" ]]; then
   # Use nvm to install latest node version.
   # This should also take our default-packages into account.
   step "Install latest node using nvm"
-  nvm install node &>/dev/null
+  nvm install node > /dev/null
   # TODO: Check for actual success
   echo_success "Node installed via nvm"
 
   # Set default node version for nvm
   step "Set latest node as default system version"
-  nvm use node &>/dev/null
+  nvm use node >/dev/null
   # For reference:
   # nvm run node --version
   echo_success "Now using Node $(node -v)!"
@@ -499,21 +519,10 @@ copy_file $DOTFILES_DIR/node/npmrc ~/.npmrc
 section "Command-line tools"
 
 step "Installing command-line tools"
-if is_macos; then
-  install_brew_package coreutils
-  install_brew_package findutils
-  install_brew_package ack
-  install_brew_package autoconf
-  install_brew_package automake
-  install_brew_package tree
-  install_brew_package wget --with-iri
-  install_brew_package openssl
-  install_brew_package httpie
-else
-  sudo apt-get install build-essential
-  sudo apt-get install httpie
-  sudo apt-get install tree
-fi
+sudo apt-get install -qq -y build-essential
+sudo apt-get install -qq -y httpie
+sudo apt-get install -qq -y tree
+echo_success "Command-line tools installed"
 
 ###############################################################################
 # Vim
@@ -523,17 +532,13 @@ section "Vim - let's hope we can quit!"
 # MacOS does not support true colour mode so we will replace the default version
 # We also update Ubuntu to use the latest though too.
 step "Install latest version of Vim"
-if is_macos; then
-  install_brew_package vim
+sudo add-apt-repository -y ppa:jonathonf/vim > /dev/null
+sudo apt-get update -qq -y
+sudo apt-get install -qq -y vim > /dev/null
+if [ $? -eq 0 ]; then
+  echo_success "Latest Vim successfully installed."
 else
-  sudo add-apt-repository ppa:jonathonf/vim
-  sudo apt-get update
-  sudo apt install vim
-  if [ $? -eq 0 ]; then
-    echo_success "Latest Vim successfully installed."
-	else
-		echo_error "The latest version of Vim could not be installed."
-	fi
+  echo_error "The latest version of Vim could not be installed."
 fi
 
 step "Creating ~/.vim directories"
@@ -584,22 +589,10 @@ fi
 # LAUNCH IS GO!
 ###############################################################################
 section "Post Launch Checklist"
-if is_macos; then
-  echo_info "Run the Brewfile (brew bundle)"
-  echo_info "Install Visual Studio Code extensions (vscode/extensions.sh)"
-  echo_info "Install & set iTerm2 themes from iterm2 folder"
-  echo_info "ZSH might need you to run (only once): compaudit | xargs chmod g-w"
-else
-  echo_info "Install fonts"
-  echo_info "Run winget.bat from PowerShell"
-  echo_info "Copy Visual Studio Code settings (vscode/settings.json)"
-  echo_info "Install Visual Studio Code extensions in PowerShell (vscode/extensions.bat)"
-  echo_info "Install Spicetify via Powershell"
-  # Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/khanhas/spicetify-cli/master/install.ps1" | Invoke-Expression
-fi
+
+echo_info "Git Config - change name and email if you didn't use the boosters"
+
 # PowerToys keymaps for Windows
-# - Shift+2 = Shift+'
-# - Shift+' = Shift+2
 # - Win+Q = Alt+F4
 # - Win+W = Ctrl+W
 # - Win+T = Ctrl+T

@@ -262,6 +262,14 @@ if_os () { [[ $OSTYPE == *$1* ]]; }
 # We don't wrap it in brackets since we aren't doing a comparison. Our if
 # statement purely checks whether the function called returns a success.
 is_macos () { if_os darwin; }
+# The check for running Linux within WSL2 is a little different.
+# The $OSTYPE for Ubuntu in WSL2 is still linux-gnu but we need to check
+# the kernel release instead.
+# For WSL the kernel release will look something like:
+#    5.15.90.1-microsoft-standard-WSL2
+# We get the kernel release using uname -r
+# or by checking /proc/sys/kernel/osrelease
+is_wsl2 () { [[ $(grep microsoft-standard-WSL2 /proc/sys/kernel/osrelease) ]]; }
 # Get some more detailed information on the Linux distro if desired.
 is_nix () {
     case "$OSTYPE" in
