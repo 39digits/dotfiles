@@ -3,3 +3,5 @@
 	#email = user@example.com
 [core]
 	excludesfile = ~/.gitignore_global
+[init]
+	defaultBranch = main
