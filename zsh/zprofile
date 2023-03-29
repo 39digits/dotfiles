@@ -7,11 +7,11 @@
 ##
 
 # If this is an M1 Mac then the Homebrew path is a little different
-if [[ $OSTYPE == "darwin" ]] then
-  if [[ "$(uname -m)" == "arm64" ]]; then
-    export PATH="/opt/homebrew/bin:${PATH}"
-  fi
-fi
+# if [[ $OSTYPE == "darwin" ]] then
+#   if [[ "$(uname -m)" == "arm64" ]]; then
+#     export PATH="/opt/homebrew/bin:${PATH}"
+#   fi
+# fi
 
 ### Ensure path arrays do not contain duplicates.
 # typeset -gU cdpath fpath mailpath path
@@ -28,13 +28,11 @@ fi
 #   $path
 # )
 
-# Enable the postgres CLI commands
-# path+=(/Applications/Postgres.app/Contents/Versions/latest/bin)
-
 ###########################
 ## User Commands
 ##
 
+# RUBY via RBENV
 # 1. Sets up your shims path. Only requirement for rbenv to function properly. Can manually add ~/.rbenv/shims to your $PATH too.
 # 2. Installs autocompletion. This is entirely optional but pretty useful. Sourcing ~/.rbenv/completions/rbenv.zsh.
 # 3. Rehashes shims. Doing this automatically makes sure everything is up to date. You can always run rbenv rehash manually.
