@@ -38,7 +38,7 @@ To activate WSL2 services in Windows 11 and automatically install the latest Ubu
 wsl --install
 ```
 
-Check the documentation on [installing WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) if you wish to install a different version of Linux other than Ubuntu LTS.
+Check the documentation on [installing WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) if you wish to install a different version of Ubuntu other than the current LTS.
 
 Once completed you will need to reboot your system. Terminal will automatically open upon login to the newly installed Linux and ask you to setup your new user.
 
@@ -149,8 +149,6 @@ These dotfiles include my recommended fonts:
 - **For Code Editor:** _Source Code Pro for Powerline_
 
 Both fonts can be found in the `fonts` directory which will need to be manually installed. You can open the current folder inside Windows Explorer by typing `explorer.exe .` from the Linux shell.
-
-You will need to manually install these fonts. While, on **MacOS** these will be automatically installed within the provided `boosters` file.
 
 Configure your terminal to use _MesloLGS NF_ as the default font to get the most out of the terminal prompt we install for ZSH. If you don't want to use a Powerline font on the prompt you can run `p10k configure` after installation completes and configure the prompt to not use icons at all.
 
