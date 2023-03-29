@@ -404,7 +404,7 @@ if DOTFILES_ZSH=$(which zsh); then
 	# Set zsh as default shell.
 	step "Set ZSH as default"
 	# chsh -s /usr/local/bin/zsh >/dev/null
-	sudo chsh -s $DOTFILES_ZSH > /dev/null
+	chsh -s $DOTFILES_ZSH > /dev/null
 	# $? is a bash variable that stores the result of the last executed command.
 	# A value of 0 means it was successful, so any result that is not 0 failed.
 	if [ $? -eq 0 ]; then
