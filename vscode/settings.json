@@ -1,40 +1,61 @@
-// Place your settings in this file to overwrite the default settings
 {
+  // --------------------------------------------------------------------------
+  // VSCode settings & extensions now managed with the built-in Settings Sync.
+  // This is just here for a backup.
+  // --------------------------------------------------------------------------
+  "workbench.colorTheme": "Anchorage",
   "editor.fontFamily": "\"Source Code Pro for Powerline\", 'Cascadia Code', monospace",
   "terminal.integrated.fontFamily": "MesloLGS NF",
-  "editor.fontSize": 14,
   "editor.lineHeight": 24,
   "editor.tabSize": 2,
   "editor.minimap.enabled": false,
+  "workbench.tree.indent": 14,
+  // // "editor.fontSize": 16,
+  // Open Editors is a list of files shown in a panel in the Explorer
   "explorer.openEditors.visible": 0,
-  "editor.suggestSelection": "first",
-  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "explorer.compactFolders": false,
+  // "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "files.trimTrailingWhitespace": true,
   "[markdown]": {
-    // double spaces at the end of a line = new line
+    // https://github.com/microsoft/vscode/issues/1679
+    // Double spaces at the end of a line is equivalent of a new line
+    // But removing trailing whitespace breaks this in Markdown files.
     "files.trimTrailingWhitespace": false
   },
-  "telemetry.enableTelemetry": false,
-  // ########### JavaScript / Node
-  "typescript.validate.enable": false,
-  "javascript.validate.enable": false,
+  "git.enableCommitSigning": true,
+  "git.suggestSmartCommit": false,
+  "telemetry.telemetryLevel": "off",
+  // ############# Extensions and Files
+  "settingsSync.ignoredExtensions": [
+    "shopify.theme-check-vscode",
+    "donaldhays.rgbds-z80"
+  ],
+  "files.associations": {
+    "*.rgbasm": "gbz80"
+  },
+  // ############# Prettier formatter
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.singleQuote": true,
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "editor.formatOnSave": true,
-  // "prettier.eslintIntegration": false,
-  "prettier.singleQuote": true,
-  "editor.multiCursorModifier": "alt",
-  "workbench.colorTheme": "Anchorage",
-  "remote.extensionKind": {
-    "ms-azuretools.vscode-docker": "workspace"
+  "prettier.documentSelectors": ["**/*.astro"],
+  "[astro]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "debug.toolBarLocation": "docked",
-  "git.suggestSmartCommit": false
-  // ########### PHP - Not currently in use
-  // "php.suggest.basic": false,
-  // "php-cs-fixer.onsave": true,
-  // "[php]": {
-  //   "editor.defaultFormatter": "junstyle.php-cs-fixer"
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "editor.inlineSuggest.enabled": true
+  // --------------------------------------------------------------------------
+  // Keeping these just-in-case:
+  // https://github.com/microsoft/vscode-docker/issues/954
+  // "remote.extensionKind": {
+  //   "ms-azuretools.vscode-docker": "workspace"
   // },
+  // "debug.toolBarLocation": "docked",
+  // "editor.suggestSelection": "first",
+  // "typescript.validate.enable": false,
+  // "javascript.validate.enable": false,
 }
