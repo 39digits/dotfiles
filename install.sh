@@ -521,9 +521,9 @@ copy_file $DOTFILES_DIR/node/npmrc ~/.npmrc
 section "Command-line tools"
 
 step "Installing command-line tools"
-sudo apt-get install -qq -y build-essential
-sudo apt-get install -qq -y httpie
-sudo apt-get install -qq -y tree
+sudo apt-get install -qq -y build-essential > /dev/null
+sudo apt-get install -qq -y httpie > /dev/null
+sudo apt-get install -qq -y tree > /dev/null
 echo_success "Command-line tools installed"
 
 ###############################################################################
