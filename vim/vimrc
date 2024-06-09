@@ -2,11 +2,9 @@ set nocompatible                       " be iMproved, required
 
 " Source the plugins
 so ~/.vim/plugins.vim
-let NERDTreeHijackNetrw = 0
 
 set laststatus=2
 set backspace=indent,eol,start				 " Ensure backspace works like other editors
-let mapleader = ',' 						       " Set the leader key to , (default is \)
 set number							               " Show line numbers
 
 "-----------------Visuals-------------------"
@@ -14,18 +12,6 @@ set background=dark
 syntax on
 set cursorline
 set termguicolors							" Set True Color (24-bit) support
-"set t_Co=256                           " Use 256 colors in Terminal Vim; Not required.
-set guifont=SourceCodePro-Regular:h13	 " Set our MacVim font and height
-set linespace=10                       " Set line height spacing in pixels (MacVim Only)
-"set guioptions-=l						" Hide scroll bar on left
-"set guioptions-=L						" Hide scroll bar on left in split
-"set guioptions-=r						" Hide scroll bar on right
-"set guioptions-=R						" Hide scroll bar on right in split
-
-" ---- One Half Dark Theme
-" colorscheme onehalfdark
-" let g:airline_theme='onehalfdark'
-" ---- Node Theme
 colorscheme nord
 
 "-----------------Search-------------------"
@@ -37,14 +23,8 @@ set incsearch							" Incremental search - 'search as you type'
 "nmap  = Normal Mode mapping
 "vmap  = Visual Mode mapping
 
-" Open .vimrc file in new tab
-nmap <Leader>ev :tabedit $MYVIMRC<cr>
-
 " Remove search highlighting
-nmap <Leader><space> :nohlsearch<cr>
-
-" Toggle NERDtree (D = CMD on MacVim)
-nmap <D-1> :NERDTreeToggle<cr>
+" nmap <Leader><space> :nohlsearch<cr>
 
 "-----------------Auto-Commands-------------------"
 augroup autosource
@@ -52,7 +32,4 @@ augroup autosource
 	autocmd!
 	autocmd BufWritePost .vimrc source %			" Automatically source the .vimrc file on save
 augroup END
-
-" Close the vim-vinegar file view using Escape
-autocmd FileType netrw nmap <silent> <buffer> <Esc> :bd<cr>
 
