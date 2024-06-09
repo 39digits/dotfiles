@@ -3,15 +3,10 @@
 # it should not contain commands that produce output or assume the shell is attached to a tty.
 # This file will always be sourced.
 
-
 # Ensure that a non-login, non-interactive shell has a defined environment.
 #if [[ "$SHLVL" -eq 1 && ! -o LOGIN && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
 #  source "${ZDOTDIR:-$HOME}/.zprofile"
 #fi
-#
-# export ARCHFLAGS="-arch x86_64"
-# export SSH_KEY_PATH="~/.ssh/rsa_id"
-# export MANPATH="/usr/local/man:$MANPATH"
 
 # If language environment is not set, make it so.
 if [[ -z "$LANG" ]]; then
@@ -37,12 +32,5 @@ if (( $#commands[(i)lesspipe(|.sh)] )); then
   export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
 fi
 
-# Browser
-if [[ "$OSTYPE" == darwin* ]]; then
-  export BROWSER='open'
-fi
-
-# Stop homebrew from collecting usage analytics
-export HOMEBREW_NO_ANALYTICS=1
 # Disable Next.js from collecting usage analytics
 export NEXT_TELEMETRY_DISABLED=1

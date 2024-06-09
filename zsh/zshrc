@@ -29,9 +29,9 @@ source $ZSH/oh-my-zsh.sh
 ## User configuration
 ##
 ## ENVIRONMENT VARIABLES:  .zshenv
-## USER COMMANDS: .zprofile
-## PATHS:  .zprofile
-## ALIASES:  ~/.oh-my-zsh/custom/aliases.zsh
+## USER COMMANDS:          .zprofile
+## PATHS:                  .zprofile
+## ALIASES:                ~/.oh-my-zsh/custom/aliases.zsh
 ## For a full list of active aliases, run `alias`.
 ##
 
