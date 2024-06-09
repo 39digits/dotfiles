@@ -327,7 +327,6 @@ clone_git_repo https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/
 clone_git_repo https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 clone_git_repo https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions
 clone_git_repo https://github.com/lukechilds/zsh-nvm ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-nvm
-clone_git_repo https://github.com/lukechilds/zsh-better-npm-completion ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-better-npm-completion
 
 # Create symlinks for zsh and oh-my-zsh files.
 # The reason we use symlinks here instead of copying is to ensure any future updates we make

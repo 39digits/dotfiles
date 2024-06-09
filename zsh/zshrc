@@ -16,7 +16,7 @@ ZSH_AUTOSUGGEST_USE_ASYNC=true
 plugins=(zsh-nvm)
 plugins+=(zsh-autosuggestions)
 plugins+=(zsh-completions)
-plugins+=(zsh-better-npm-completion)
+plugins+=(npm)
 # Note that zsh-syntax-highlighting must be the last plugin sourced.
 plugins+=(zsh-syntax-highlighting)
 
