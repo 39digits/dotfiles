@@ -531,18 +531,6 @@ echo_success "Command-line tools installed"
 ###############################################################################
 section "Vim - let's hope we can quit!"
 
-# MacOS does not support true colour mode so we will replace the default version
-# We also update Ubuntu to use the latest though too.
-step "Install latest version of Vim"
-sudo add-apt-repository -y ppa:jonathonf/vim > /dev/null
-sudo apt-get update -qq -y
-sudo apt-get install -qq -y vim > /dev/null
-if [ $? -eq 0 ]; then
-  echo_success "Latest Vim successfully installed."
-else
-  echo_error "The latest version of Vim could not be installed."
-fi
-
 step "Creating ~/.vim directories"
 create_dir "$HOME/.vim"
 create_dir "$HOME/.vim/bundle"
@@ -561,11 +549,9 @@ step "Create symlinks for .vimrc and plugin list"
 create_symlink $DOTFILES_DIR/vim/vimrc ~/.vimrc
 create_symlink $DOTFILES_DIR/vim/plugins.vim ~/.vim/plugins.vim
 
-# Install vim themes.
-step "Install vim themes via symlinks"
+# Install vim theme.
+step "Install Nord theme for vim via symlinks"
 create_symlink $DOTFILES_DIR/vim/nord.vim ~/.vim/colors/nord.vim
-# create_symlink $DOTFILES_DIR/vim/atom-dark.vim ~/.vim/colors/atom-dark.vim
-# create_symlink $DOTFILES_DIR/vim/material-theme.vim ~/.vim/colors/material-theme.vim
 
 # Install vim plugins
 step "Install vim plugins"
