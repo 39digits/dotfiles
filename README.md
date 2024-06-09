@@ -44,7 +44,7 @@ Once completed you will need to reboot your system. Terminal will automatically 
 
 ### 2. Clone the dotfiles into Linux
 
-If you don't have it open from the previous step, open Terminal and a tab to your installed Linux distro.
+If you don't have it open from the previous step, open Terminal and a tab to your installed Linux distro. These dotfiles have been tested on Ubuntu versions 18.04 through to 24.01
 
 There is no requirement for the location, however I recommend cloning into a `.dotfiles` directory in your home folder.
 
@@ -87,7 +87,7 @@ By default these dotfiles will install the following on Ubuntu in WSL2:
 - Git (latest version)
 - ZSH (latest version)
 - oh-my-zsh (including helpful ZSH plugins for Node)
-- Preferred ZSH prompt (using powerlevel10k)
+- Preferred ZSH prompt (using Oh My Posh)
 - Latest version of Node (via nvm)
 - A set of commandline tools (e.g. httpie, tree, etc)
 - Latest version of vim
