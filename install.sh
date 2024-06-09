@@ -339,39 +339,21 @@ create_symlink $DOTFILES_DIR/zsh/zshenv ~/.zshenv
 create_symlink $DOTFILES_DIR/zsh/zprofile ~/.zprofile
 create_symlink $DOTFILES_DIR/zsh/aliases.zsh ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/aliases.zsh
 
-# I use powerlevel10k (not to be confused with powerlevel9k).
-# p10k is an incredibly fast command prompt (especially compared to 9k)
-# and is very, very customisable.
+# After powerlevel10k went into unsupported mode, I switched to Oh My Posh.
+# Oh My Posh works in both Linux and Powershell making it a great choice for
+# anybody developing across Windows and Linux (within WSL2). We set it up
+# only for Linux here but you can easily set it up for Windows too.
 #
-# I have a very minimal theme on purpose - I much prefer to keep the prompt
-# as pure and clean as possible. The prompt itself is across two lines with
-# the top line showing most of the information about the current directory
-# and any version control information (if relevant). You will see a line break
-# ahead of the prompt display to keep a little extra space between each command
-# to make parsing the command line a little quicker. Unlike many themes, I keep
-# it lean without much visual noise.
-#
-# If my prompt isn't to your liking, run `p10k configure` in the commandline to
-# run through the configuration wizard yourself. You'll be amazed at the options!
-#
-# Read up more at https://github.com/romkatv/powerlevel10k
-step "Installing ZSH theme"
-clone_git_repo https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k "--depth=1"
-# If installing powerlevel10k, there is a window text reflow issue affecting all themes
-# with prompts using the right side of the screen. This is not a powerlevel10k bug
-# but affects all prompt themes / frameworks that put data on the right side. This is because
-# it has to pad the line to reach the right side of thhe viewport leading to odd reflow
-# behaviour when resizing the screen.  If you resize and it looks weird, just `clear`.
-# If it really, really bothers you, the fix for powerlevel10k is to run
-# p10k configure and choose "Disconnected" when asked about Prompt Connection.
-# Then open ~/.p10k.zsh and either comment out all elements of
-# POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS or move them to POWERLEVEL9K_LEFT_PROMPT_ELEMENTS.
+# Read up more at https://ohmyposh.dev/
+step "Installing Oh My Posh"
+curl -s https://ohmyposh.dev/install.sh | sudo bash -s
 
 # I used to use a theme of my own. Left here for posterity.
 # create_symlink $DOTFILES_DIR/zsh/39digits.zsh-theme ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/themes/39digits.zsh-theme
 
-step "Create symlinks for powerlevel10k prompt"
-create_symlink $DOTFILES_DIR/zsh/p10k.zsh ~/.p10k.zsh
+step "Create symlinks for Oh My Posh prompt"
+create_dir "$HOME/.config/oh-my-posh"
+create_symlink $DOTFILES_DIR/zsh/39digits.omp.json ~/.config/oh-my-posh/39digits.omp.json
 
 # We need to check that:
 # 1. ZSH is available in our path,
