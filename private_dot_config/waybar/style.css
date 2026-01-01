@@ -1,0 +1,131 @@
+@import "themes/catppuccin-mocha.css";
+
+* {
+  background-color: @base;
+  color: @text;
+
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  font-family: 'JetBrainsMono Nerd Font';
+  font-size: 14px;
+}
+
+window#waybar {
+  background-color: @base;
+}
+
+
+.modules-left {
+  margin-left: 8px;
+}
+
+.modules-right {
+  margin-right: 8px;
+}
+
+#workspaces button {
+  all: initial;
+  color: @text;
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  padding: 0 6px;
+  margin: 0 1.5px;
+  min-width: 9px;
+}
+#workspaces button.empty {
+  opacity: 0.5;
+}
+/* #workspaces button.active {
+  color: @sapphire;
+}
+#workspaces button:hover {
+  color: @sapphire;
+} */
+
+
+#bluetooth,
+#battery,
+#power-profiles-daemon,
+#network,
+#pulseaudio,
+#cpu,
+#clock,
+#custom-update {
+  /* min-width: 10px; */
+  margin: 0 10px;
+}
+/* #battery {
+  margin: 0 2px;
+} */
+/* Bluetooth seems to have odd margins compared to others */
+#bluetooth {
+  margin: 0 2px 0 10px;
+}
+#clock {
+  margin-left: 8.75px;
+}
+
+#idle_inhibitor {
+  padding: 0 5px 0 5px;
+  color: @text;
+  transition: color 0.15s ease;
+}
+/* #idle_inhibitor.deactivated {
+  color: @overlay1;
+} */
+
+
+/* #tray {
+  margin-right: 16px;
+}
+*/
+
+tooltip {
+  background-color: @surface0;
+  border: 1px solid @surface1;
+  border-radius: 4px;
+
+  padding: 2px;
+}
+
+tooltip label {
+  color: @text;
+}
+
+#custom-power {
+  color: @text;
+  min-width: 12px;
+  margin: 0 8.5px 0 8px;
+  /* margin: 0 8.5px 0 12px; */
+}
+#custom-power:hover {
+  color: @red;
+}
+
+#battery.warning {
+  color: @yellow;
+}
+#battery.critical {
+  color: @red;
+}
+#battery.charging {
+  color: @green;
+}
+
+#network.disconnected {
+  color: @overlay0;
+}
+#bluetooth.disabled {
+  color: @overlay0;
+}
+#pulseaudio.muted {
+  color: @overlay0;
+}
+
+
+.hidden {
+  opacity: 0;
+}
+

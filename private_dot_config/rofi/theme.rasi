@@ -1,0 +1,85 @@
+/* Import palette - change this line to switch themes */
+@import "catppuccin-mocha"
+
+* {
+	background-color: transparent;
+	text-color: @text;
+	margin: 0;
+	padding: 0;
+	spacing: 0;
+}
+
+window {
+	background-color: @base;
+	border: 2px solid;
+	border-color: @sapphire;
+	border-radius: 8px;
+	width: 500px;
+}
+
+inputbar {
+	padding: 12px;
+	spacing: 12px;
+	children: [prompt, entry];
+	background-color: @surface0;
+}
+
+prompt {
+	text-color: @sapphire;
+}
+
+entry {
+	placeholder: "Search...";
+	placeholder-color: @subtext0;
+}
+
+message {
+	border: 1px solid;
+	border-color: @surface1;
+	background-color: @surface0;
+	padding: 8px;
+}
+
+listview {
+	lines: 8;
+	padding: 4px 0;
+	fixed-height: true;
+	background-color: @base;
+}
+
+element {
+	padding: 8px 12px;
+	spacing: 12px;
+}
+
+element normal normal {
+	text-color: @text;
+}
+
+element normal urgent {
+	text-color: @red;
+}
+
+element normal active {
+	text-color: @sapphire;
+}
+
+element selected normal,
+element selected active {
+	background-color: @surface1;
+	text-color: @sapphire;
+}
+
+element selected urgent {
+	background-color: @red;
+	text-color: @base;
+}
+
+element-icon {
+	size: 1em;
+	vertical-align: 0.5;
+}
+
+element-text {
+	vertical-align: 0.5;
+}

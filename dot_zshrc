@@ -1,0 +1,165 @@
+# ===========================================
+# ZSH Configuration
+# ===========================================
+
+# -----------------------------------------
+# XDG Base Directory Specification
+# -----------------------------------------
+# These environment variables define standard locations for user-specific
+# files, helping keep your home directory organized. Many modern applications
+# respect these variables and will store their configs/data accordingly.
+#
+# XDG_CONFIG_HOME: User-specific configuration files (default: ~/.config)
+# XDG_DATA_HOME:   User-specific data files (default: ~/.local/share)
+# XDG_CACHE_HOME:  User-specific cache files (default: ~/.cache)
+# XDG_STATE_HOME:  User-specific state files (default: ~/.local/state)
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+# -----------------------------------------
+# Environment Variables
+# -----------------------------------------
+# EDITOR: Default editor for command-line programs (git commit, crontab, etc.)
+export EDITOR='nano'
+# export EDITOR='nvim'  # Uncomment when ready to switch to Neovim
+
+# VISUAL: Editor for visual/full-screen editing (some programs prefer this)
+export VISUAL="$EDITOR"
+
+# PAGER: Program for viewing long output (man pages, git diff, etc.)
+# -R preserves color codes, -F exits if content fits on one screen
+export PAGER='less -RF'
+
+# BROWSER: Default browser for terminal programs that open URLs
+# export BROWSER='vivaldi'
+
+# GPG - set TTY for pinentry (fallback if GUI unavailable)
+export GPG_TTY=$(tty)
+# If using terminal-based pinentry or if GPG signing fails in new terminals
+# with "Inappropriate ioctl for device", uncomment following to update TTY:
+# gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
+
+# -----------------------------------------
+# Path Configuration
+# -----------------------------------------
+# Add user binary directories to PATH
+# ~/.local/bin:  Standard location for user-installed scripts/binaries
+# ~/.cargo/bin:  Rust/Cargo installed binaries (cargo install)
+typeset -U PATH  # Ensure no duplicate entries in PATH
+path=(
+    "$HOME/.local/bin"
+    "$HOME/.cargo/bin"
+    $path
+)
+
+# -----------------------------------------
+# History Configuration
+# -----------------------------------------
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt HIST_IGNORE_DUPS       # Don't record an entry that was just recorded
+setopt HIST_IGNORE_ALL_DUPS   # Remove older duplicate when new entry is added
+setopt HIST_IGNORE_SPACE      # Don't record entries starting with a space
+setopt HIST_REDUCE_BLANKS     # Remove unnecessary blanks before saving
+setopt SHARE_HISTORY          # Share history between all zsh sessions
+setopt APPEND_HISTORY         # Append to history file, don't overwrite
+
+# -----------------------------------------
+# Directory Navigation
+# -----------------------------------------
+setopt AUTO_CD                # Type directory name to cd into it (no 'cd' needed)
+setopt AUTO_PUSHD             # Automatically push directories onto the stack
+setopt PUSHD_IGNORE_DUPS      # Don't push duplicate directories onto stack
+setopt PUSHD_SILENT           # Don't print directory stack after pushd/popd
+
+# -----------------------------------------
+# General Shell Options
+# -----------------------------------------
+setopt INTERACTIVE_COMMENTS   # Allow comments in interactive shell (useful for pasting)
+setopt NO_BEEP                # Disable terminal beep/bell
+setopt NO_NOMATCH             # Pass failed glob patterns to command (e.g., git show HEAD^)
+unsetopt FLOW_CONTROL         # Disable Ctrl+S/Ctrl+Q flow control (frees these keys)
+
+# -----------------------------------------
+# Completion System
+# -----------------------------------------
+# Add zsh-completions to function path (Arch Linux location)
+fpath=(/usr/share/zsh/site-functions $fpath)
+
+# Initialize completion system with caching for faster startup
+# Cache file location respects XDG specification
+[[ -d "$XDG_CACHE_HOME/zsh" ]] || mkdir -p "$XDG_CACHE_HOME/zsh"
+autoload -Uz compinit
+compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
+
+# Completion styling
+zstyle ':completion:*' menu select                    # Arrow key menu selection
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'  # Case-insensitive matching
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}      # Colorize completions using LS_COLORS
+zstyle ':completion:*' completer _expand _complete _ignored _approximate
+
+# Complete from cursor position, not just end of word
+setopt COMPLETE_IN_WORD
+setopt ALWAYS_TO_END          # Move cursor to end after completion
+setopt MENU_COMPLETE          # Cycle through completions on repeated Tab
+
+# -----------------------------------------
+# Key Bindings
+# -----------------------------------------
+# Use emacs-style key bindings (Ctrl+A for start, Ctrl+E for end, etc.)
+bindkey -e
+
+# History search: Up/Down arrows search history based on current input
+bindkey '^[[A' history-search-backward    # Up arrow
+bindkey '^[[B' history-search-forward     # Down arrow
+
+# Navigation keys
+bindkey '^[[H' beginning-of-line          # Home key
+bindkey '^[[F' end-of-line                # End key
+bindkey '^[[3~' delete-char               # Delete key
+
+# Word navigation with Ctrl+Arrow
+bindkey '^[[1;5C' forward-word            # Ctrl+Right: Move forward one word
+bindkey '^[[1;5D' backward-word           # Ctrl+Left: Move backward one word
+
+# -----------------------------------------
+# Plugins
+# -----------------------------------------
+# zsh-autosuggestions: Fish-like autosuggestions based on history
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# zsh-syntax-highlighting: Fish-like syntax highlighting
+# NOTE: This must be sourced AFTER all other plugins and before prompt init
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# -----------------------------------------
+# Tool Initialization
+# -----------------------------------------
+# mise: Polyglot runtime manager (replaces nvm, pyenv, rbenv, etc.)
+# Uncomment after installing mise:
+# eval "$(mise activate zsh)"
+
+# -----------------------------------------
+# Aliases
+# -----------------------------------------
+# Enable colors by default
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias diff='diff --color=auto'
+alias ip='ip --color=auto'
+
+# Directory listing shortcuts
+alias ll='ls -lah'           # Long listing with hidden files, human-readable sizes
+alias la='ls -A'             # List all except . and ..
+alias l='ls -CF'             # Compact listing with indicators
+
+# -----------------------------------------
+# Prompt
+# -----------------------------------------
+# Starship: Cross-shell prompt
+# Config location: ~/.config/starship.toml
+# NOTE: This must be at the end of the file
+eval "$(starship init zsh)"
