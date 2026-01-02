@@ -139,8 +139,7 @@ source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 # Tool Initialization
 # -----------------------------------------
 # mise: Polyglot runtime manager (replaces nvm, pyenv, rbenv, etc.)
-# Uncomment after installing mise:
-# eval "$(mise activate zsh)"
+eval "$(mise activate zsh)"
 
 # -----------------------------------------
 # Aliases
