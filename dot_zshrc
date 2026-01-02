@@ -47,10 +47,12 @@ export GPG_TTY=$(tty)
 # Add user binary directories to PATH
 # ~/.local/bin:  Standard location for user-installed scripts/binaries
 # ~/.cargo/bin:  Rust/Cargo installed binaries (cargo install)
+# ~/.config/composer/vendor/bin:  Global composer bins like Laravel
 typeset -U PATH  # Ensure no duplicate entries in PATH
 path=(
     "$HOME/.local/bin"
     "$HOME/.cargo/bin"
+    "$HOME/.config/composer/vendor/bin"
     $path
 )
 
