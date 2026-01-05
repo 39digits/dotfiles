@@ -1,9 +1,10 @@
 @import "themes/catppuccin-mocha.css";
 
 * {
+/*
   background-color: @base;
   color: @text;
-
+*/
   border: none;
   border-radius: 0;
   min-height: 0;
@@ -11,8 +12,9 @@
   font-size: 14px;
 }
 
-window#waybar {
+#window {
   background-color: @base;
+  margin-left: 10px;
 }
 
 
@@ -24,63 +26,9 @@ window#waybar {
   margin-right: 8px;
 }
 
-#workspaces button {
-  all: initial;
-  color: @text;
-  border: none;
-  border-radius: 0;
-  min-height: 0;
-  padding: 0 6px;
-  margin: 0 1.5px;
-  min-width: 9px;
+.hidden {
+  opacity: 0;
 }
-#workspaces button.empty {
-  opacity: 0.5;
-}
-/* #workspaces button.active {
-  color: @sapphire;
-}
-#workspaces button:hover {
-  color: @sapphire;
-} */
-
-
-#bluetooth,
-#battery,
-#power-profiles-daemon,
-#network,
-#pulseaudio,
-#cpu,
-#clock,
-#custom-update {
-  /* min-width: 10px; */
-  margin: 0 10px;
-}
-/* #battery {
-  margin: 0 2px;
-} */
-/* Bluetooth seems to have odd margins compared to others */
-#bluetooth {
-  margin: 0 2px 0 10px;
-}
-#clock {
-  margin-left: 8.75px;
-}
-
-#idle_inhibitor {
-  padding: 0 5px 0 5px;
-  color: @text;
-  transition: color 0.15s ease;
-}
-/* #idle_inhibitor.deactivated {
-  color: @overlay1;
-} */
-
-
-/* #tray {
-  margin-right: 16px;
-}
-*/
 
 tooltip {
   background-color: @surface0;
@@ -94,6 +42,77 @@ tooltip label {
   color: @text;
 }
 
+/* 
+================================================
+Workspaces 
+
+For full config and styling options, check
+https://man.archlinux.org/man/extra/waybar/waybar-hyprland-workspaces.5.en
+
+Sometimes the styling needs to be applied to the label itself, for example:
+
+#workspaces button.active {
+  background-color: @maroon;
+  color: @base;  <---- This may not apply in the way you are expecting
+}
+#workspaces button.active label {
+  color: @base;  <---- This is needed to actually change the text color
+}
+*/
+
+#workspaces button {
+
+  all: initial;
+  color: @text;
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  padding: 0 6px;
+  margin: 0 1.5px;
+  min-width: 9px;
+}
+#workspaces button.empty label {
+  color: @text;
+  opacity: 0.5;
+}
+#workspaces button.empty label {
+  color: @text;
+  opacity: 0.5;
+}
+
+
+/*
+================================================
+Modules
+*/
+#bluetooth,
+#battery,
+#power-profiles-daemon,
+#network,
+#pulseaudio,
+#cpu,
+#clock,
+#custom-update {
+  /* min-width: 10px; */
+  margin: 0 10px;
+}
+/* Bluetooth seems to have odd margins compared to others */
+#bluetooth {
+  margin: 0 2px 0 10px;
+}
+#clock {
+  margin-left: 8.75px;
+}
+
+#idle_inhibitor {
+  padding: 0 5px 0 5px;
+  color: @text;
+  transition: color 0.15s ease;
+}
+/* #tray {
+  margin-right: 16px;
+}
+*/
 #custom-power {
   color: @text;
   min-width: 12px;
@@ -124,8 +143,4 @@ tooltip label {
   color: @overlay0;
 }
 
-
-.hidden {
-  opacity: 0;
-}
 

@@ -6,10 +6,11 @@
   "height": 26,  // 30
   "modules-left": [
     "hyprland/workspaces",
-    "mpd"
+    //"mpd",
+    "hyprland/window"
   ],
   "modules-center": [
-    "hyprland/window"
+    "mpd"
   ],
   "modules-right": [
     "tray",
@@ -23,28 +24,33 @@
     "custom/power"
   ],
   "hyprland/workspaces": {
-    "format": "{icon}",
+    "active-only": false,
+    "all-outputs": false,  // This shows ONLY the workspaces for the current display
+    "format": "{name} {icon}",
     "format-icons": {
-      "default": "",
-      "1": "1",
-      "2": "2",
-      "3": "3",
-      "4": "4",
-      "5": "5",
-      "6": "6",
-      "7": "7",
-      "8": "8",
-      "9": "9",
-      "10": "0",
-      "active": "󱓻"
-    },
-    "persistent-workspaces": {
-      "1": [],
-      "2": [],
-      "3": [],
-      "4": [],
-      "5": []
+//      "default": "",
+//      "1": "1",
+//      "2": "2",
+ //     "3": "3",
+//      "4": "4",
+//      "5": "5",
+//      "6": "6",
+//      "7": "7",
+//      "8": "8",
+//      "9": "9",
+//      "10": "0",
+             "urgent": "",
+             "active": "",
+             "default": ""
+//      "active": "󱓻"
     }
+    //"persistent-workspaces": {
+    //  "1": [],
+    //  "2": [],
+    //  "3": [],
+    //  "4": [],
+    //  "5": []
+    //}
     //     "disable-scroll": true,
     //     "all-outputs": true,
     //     "warp-on-scroll": false,
@@ -59,6 +65,17 @@
     //         "focused": "",
     //         "default": ""
     //     }
+  },
+  // See more options at: 
+  //   https://man.archlinux.org/man/extra/waybar/waybar-hyprland-window.5.en
+  //   https://github.com/Alexays/Waybar/wiki/Module:-Sway#config-1
+  "hyprland/window": {
+	"format": "{}",
+	"max-length": 40,
+	"rewrite": {
+		"(.*) - Vivaldi": "🌎 $1",
+		"(.*) - zsh": "> [$1]"
+	}
   },
   "clock": {
     "timezone": "Europe/London",
