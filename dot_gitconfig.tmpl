@@ -1,0 +1,13 @@
+[user]
+	name = {{ .gitUsername }}
+	email = {{ .gitEmail }}
+[init]
+	defaultBranch = main
+[core]
+	editor = nano
+[pull]
+	rebase = false
+
+[include]
+	# Used for local device settings like commit signing
+	path = ~/.config/git/config.local
