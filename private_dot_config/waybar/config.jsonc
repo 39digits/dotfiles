@@ -24,11 +24,17 @@
     "custom/power"
   ],
   "hyprland/workspaces": {
+    // active-only and all-outputs to false is my preferred setting for dual-monitors.
+    // This ensures each display shows only it's workspaces in the list for easy navigation.
     "active-only": false,
     "all-outputs": false,  // This shows ONLY the workspaces for the current display
     "format": "{name} {icon}",
+//    "show-special": true,
     "format-icons": {
 //      "default": "",
+//             "1": "",
+//             "2": "",
+//             "3": "",
 //      "1": "1",
 //      "2": "2",
  //     "3": "3",
@@ -96,7 +102,7 @@
     "tooltip-format-disconnected": "Disconnected",
     "interval": 3,
     "spacing": 1,
-    "on-click": "omarchy-launch-wifi"
+    "on-click": "tui-launcher impala"
   },
   "battery": {
     "states": {
