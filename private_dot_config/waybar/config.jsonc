@@ -9,9 +9,9 @@
     //"mpd",
     "hyprland/window"
   ],
-  "modules-center": [
-    "mpd"
-  ],
+  //"modules-center": [
+  //  "mpd"
+  //],
   "modules-right": [
     "tray",
     "power-profiles-daemon",

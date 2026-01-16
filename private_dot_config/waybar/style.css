@@ -30,11 +30,13 @@
 }
 
 tooltip {
+/*
   background-color: @surface0;
   border: 1px solid @surface1;
+*/
   border-radius: 4px;
-
   padding: 2px;
+
 }
 
 tooltip label {
